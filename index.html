@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Unknown Gamer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;600&family=Poppins&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink: #ff00cc;
+      --nav-bg: rgba(20, 10, 22, 0.84);
+      --nav-shadow: #ff00cc38;
+      --nav-underline: linear-gradient(90deg, #ff00cc 0%, #3333ff 90%);
+    }
+    * { margin:0; padding:0; box-sizing: border-box; scroll-behavior:smooth; }
+    body { background: #0e0e0e; font-family: 'Poppins', sans-serif; color: white; }
+    .astro-navbar {
+      width: 100vw; position: fixed; left:0; top:0; z-index:1001;
+      background: var(--nav-bg); backdrop-filter: blur(18px);
+      box-shadow: 0 5px 28px var(--nav-shadow);
+    }
+    .nav-container { max-width:1180px; margin:0 auto; padding:0.4rem 3vw; display:flex; justify-content:space-between; align-items:center; min-height:60px; }
+
+    /* nav-logo flex with Instagram and logo */
+    .nav-logo { display: flex; align-items:center; gap:12px; font-family:'Orbitron',sans-serif; font-size:1.2rem; font-weight:700; color:#fff; user-select:none;}
+    .nav-logo a { text-decoration: none; color: inherit; display: flex; align-items: center; }
+    .nav-instagram { color: var(--pink); transition: color 0.3s; display: flex; align-items: center;}
+    .nav-instagram:hover { color: #e1306c; }
+    .nav-instagram svg { width:22px; height:22px; }
+
+    @keyframes logoPop {0%{opacity:0;transform:scale(.7) rotate(-17deg);}80%{opacity:.82;transform:scale(1.13);}100%{opacity:1;transform:scale(1);}}
+
+    .nav-links-astro {display:flex;gap:0.6rem;align-items:center;list-style:none;margin:0;padding:0 0 0 1vw;}
+    .nav-link {color:#fff;text-decoration:none;font-size:1rem;font-weight:500;padding:11px 18px;border-radius:8px;position:relative;overflow:hidden;transition:background 0.23s,color 0.23s,transform 0.17s;}
+    .nav-link::after{content:"";display:block;height:3px;border-radius:4px;width:0;left:50%;bottom:4px;background:var(--nav-underline);transition:width.3s,left.25s;position:absolute;}
+    .nav-link:hover{background:rgba(255,0,204,0.11);color:var(--pink);transform:scale(1.09);}
+    .nav-link:hover::after{width:84%;left:8%;}
+    .nav-hamburger {display:none;flex-direction:column;justify-content:center;align-items:center;width:34px;height:38px;cursor:pointer;z-index:1100;}
+    .nav-hamburger span{display:block;width:26px;height:3px;margin:3.1px 0;background:var(--pink);border-radius:5px;transition:all 0.33s;}
+    .nav-toggle{display:none;}
+    .nav-toggle:checked + .nav-hamburger span:nth-child(1){transform:rotate(45deg) translate(8px,6px);}
+    .nav-toggle:checked + .nav-hamburger span:nth-child(2){opacity:0;}
+    .nav-toggle:checked + .nav-hamburger span:nth-child(3){transform:rotate(-45deg) translate(8px,-6px);}
+    @media (max-width:700px) {
+      .nav-container{padding:0.2rem 1vw;}
+      .nav-links-astro {
+        position: absolute; top: 63px; left: 0; right:0; width: 100vw;
+        background:rgba(20,12,22,0.98);flex-direction:column;align-items:flex-start;
+        padding:14px 2vw 8px 6vw;max-height:0;overflow:hidden;opacity:0;z-index:1004;transition:max-height 0.33s,opacity 0.26s;
+      }
+      .nav-toggle:checked ~ .nav-links-astro{max-height:250px;opacity:1;}
+      .nav-hamburger{display:flex;}
+    }
+    @media (max-width:400px){
+      .nav-logo span{font-size:.97rem;}
+      .nav-link{padding:10px 7px;font-size:.97rem;}
+    }
+    header {min-height:100vh;display: flex;flex-direction: column;justify-content: center;align-items: center;text-align: center;padding: 5rem 1rem 2rem;}
+    header h1 { font-family: 'Orbitron', sans-serif; font-size: 3rem; color: #ff00cc; animation: floatScroll 2s ease-in-out infinite alternate;}
+    header h2 {margin-top: 1rem;font-size: 1.2rem;opacity: 0.87; animation: floatScroll 2s ease-in-out infinite alternate-reverse;}
+    @keyframes floatScroll {0%{transform:translateY(0px);}100%{transform:translateY(-10px);}}
+    .subscribe-button {
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #ff00cc;
+      color: white;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition:transform 0.28s;
+      display:flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .subscribe-button:hover {animation: clickSpark 0.6s linear; transform: scale(1.1);}
+    .subscribe-button svg { width: 24px; height: 24px; }
+    @keyframes clickSpark {0%{box-shadow:0 0 0 #ff00cc77;}50%{box-shadow:0 0 25px #ff00cc;}100%{box-shadow: 0 0 0 #ff00cc00;}}
+    .about-section {margin-top: 5rem; padding:2rem 1rem; text-align:center;}
+    .about-section img { width: 180px; height: auto; animation: floatImage 4s ease-in-out infinite;}
+    @keyframes floatImage {0%{transform:translateY(0) scale(1);}50%{transform:translateY(-10px) scale(1.03);}100%{transform:translateY(0) scale(1);}}
+    .stat-outer, .outer {width: 300px;height: 250px;border-radius: 10px;padding: 1px;background: radial-gradient(circle 230px at 0% 0%, #ffffff, #0c0d0d);position: relative;margin: 50px auto 0;}
+    .dot {width: 5px;aspect-ratio: 1;position: absolute;background-color: #fff;box-shadow: 0 0 10px #ffffff;border-radius: 100px;z-index: 2;right: 10%;top: 10%;animation: moveDot 6s linear infinite;}
+    @keyframes moveDot {0%,100%{top:10%;right:10%;}25%{top:10%;right:calc(100% - 35px);}50%{top:calc(100% - 30px);right:calc(100% - 35px);}75%{top:calc(100% - 30px);right:10%;}}
+    .card {z-index: 1;width: 100%;height: 100%;border-radius: 9px;border: solid 1px #202222;background: radial-gradient(circle 280px at 0% 0%, #444444, #0c0d0d);display: flex;align-items: center;justify-content: center;position: relative;flex-direction: column;color: #fff;overflow: hidden;}
+    .ray {width: 220px;height: 45px;border-radius: 100px;position: absolute;background-color: #c7c7c7;opacity: 0.4;box-shadow: 0 0 50px #fff;filter: blur(10px);transform-origin: 10%;top: 0%;left: 0;transform: rotate(40deg);}
+    .card .text {font-weight: bolder;font-size: 4rem;background: linear-gradient(45deg, #000000 4%, #fff, #000);background-clip: text;-webkit-background-clip: text;color: transparent;}
+    .line {width: 100%;height: 1px;position: absolute;background-color: #2c2c2c;}
+    .topl {top: 10%;background: linear-gradient(90deg, #888888 30%, #1d1f1f 70%);}
+    .bottoml {bottom: 10%;}
+    .leftl {left: 10%;width: 1px;height: 100%;background: linear-gradient(180deg, #747474 30%, #222424 70%);}
+    .rightl {right: 10%;width: 1px;height: 100%;}
+    .progress-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.6rem;
+      letter-spacing: 2px;
+      background: linear-gradient(90deg, #fff 10%, #bbb 60%, #444 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      margin-top: 2.5rem;
+      font-weight: 700;
+      text-shadow: 0 2px 26px #0002;
+    }
+    .progress-container {width: 310px; margin: 35px auto 0; padding: 1.2rem 1rem 0.7rem; background: #18181888;
+      border-radius: 16px; box-shadow: 0 0 18px #0003;}
+    .progress-label {font-size: 1.1rem; margin-bottom: 8px; font-family: 'Orbitron',sans-serif;
+      color: #fff; letter-spacing: 1.3px;}
+    .progress-bar-bg {width: 100%; height: 17px; border-radius: 9px; background: #383838; box-shadow: 0 3px 13px #1117 inset;}
+    .progress-bar-fill {height: 17px; border-radius: 9px; background: linear-gradient(90deg,#ff00cc 30%,#3333ff 90%); width: 0;transition: width 1.5s cubic-bezier(.36,2.03,.67,.73);}
+    .progress-bar-value {color: #fff; font-size: 1.03rem; font-family: 'Poppins',sans-serif; margin-top: 5px;}
+    @media (max-width:1100px) {
+      .stat-outer, .outer {width: 95vw; max-width: 350px; margin: 24px auto;}
+      .card .text {font-size: 2.5rem;}
+      .card {padding: 1.5rem;}
+      .progress-container {width:92vw; min-width:200px; max-width:370px;}
+    }
+    @media (max-width:740px) {
+      .flex-cards {flex-direction:column;gap:3rem !important;}
+    }
+  </style>
+</head>
+<body>
+<!-- NAV -->
+  <nav class="astro-navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <a href="index.html">Unknown Gamer</a>
+        <a href="https://www.instagram.com/unknown_gam.e.r?igsh=bzV3a3RjbXplbGh6" target="_blank" class="nav-instagram" aria-label="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.5" y2="6.5"/>
+          </svg>
+        </a>
+      </div>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle" />
+      <label for="nav-toggle" class="nav-hamburger">
+        <span></span><span></span><span></span>
+      </label>
+      <ul class="nav-links-astro">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="https://youtube.com/@unknowngamer-f-f?si=HvpQ8oMA9SnWLhxt" class="nav-link" target="_blank">YouTube</a></li>
+        <li><a href="login.html" class="nav-link">Login</a></li>
+        <li><a href="Signup.html" class="nav-link">Signup</a></li>
+      </ul>
+    </div>
+  </nav>
+  <header>
+    <h1>Welcome to Unknown Gamer</h1>
+    <h2>Gaming • Tech • Tutorials</h2>
+    <a href="https://youtube.com/@unknowngamer-f-f?si=HvpQ8oMA9SnWLhxt" target="_blank" rel="noopener">
+      <button class="subscribe-button" aria-label="Subscribe to YouTube">
+        <svg width="24" height="24" fill="white" viewBox="0 0 24 24">
+          <path d="M23.498 6.186a2.973 2.973 0 0 0-2.1-2.101C19.412 3.5 12 3.5 12 3.5s-7.413 0-9.399.585a2.974 2.974 0 0 0-2.1 2.1A31.252 31.252 0 0 0 0 12a31.23 31.23 0 0 0 .502 5.813 2.973 2.973 0 0 0 2.1 2.1c1.986.585 9.398.585 9.398.585s7.412 0 9.4-.585a2.974 2.974 0 0 0 2.1-2.101A31.228 31.228 0 0 0 24 12a31.25 31.25 0 0 0-.502-5.814ZM9.545 15.568V8.432l6.18 3.567-6.18 3.569Z"/>
+        </svg>
+      </button>
+    </a>
+
+________________
+ 
+<title>Buy GG Mouse Pro</title>
+<style>
+
+    .buy-btn {
+        display: inline-block;
+        padding: 14px 28px;
+        background: linear-gradient(45deg, #ff00ff, #00ffff);
+        color: white;
+        font-size: 18px;
+        font-weight: bold;
+        font-family: Arial, sans- serif;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 50px;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.8),
+                    0 0 25px rgba(255, 0, 255, 0.6);
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .buy-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 25px rgba(0, 255, 255, 1),
+                    0 0 35px rgba(255, 0, 255, 0.9);
+    }
+
+    .buy-btn:active {
+        transform: scale(0.98);
+    }
+    
+</style>
+</head>
+<body style="background:#0e0e0e; text-align:center; padding-top:100px;">
+
+<a href="buygg.html" class="buy-btn">💎 Buy GG Mouse Pro 💎</a>
+
+</body>
+</html>
+    <!-- CHANNEL PROGRESS heading -->
+    <h2 class="progress-title">CHANNEL PROGRESS</h2>
+    <!-- Progress Bar for 5K Subs -->
+    <div class="progress-container">
+      <div class="progress-label">Next Milestone: <b>5,000 Subs</b></div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-bar-value" id="progress-value"></div>
+    </div>
+    <!-- Glowing Stat Cards -->
+    <div class="flex-cards" style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content:center;">
+      <!-- Subscriber Card -->
+      <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+          <div class="ray"></div>
+          <div class="text" id="sub-count">Loading...</div>
+          <div>Subscribers</div>
+          <div class="line topl"></div>
+          <div class="line leftl"></div>
+          <div class="line bottoml"></div>
+          <div class="line rightl"></div>
+        </div>
+      </div>
+      <!-- Video Card -->
+      <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+          <div class="ray"></div>
+          <div class="text" id="video-count">Loading...</div>
+          <div>Videos</div>
+          <div class="line topl"></div>
+          <div class="line leftl"></div>
+          <div class="line bottoml"></div>
+          <div class="line rightl"></div>
+        </div>
+      </div>
+      <!-- Views Card -->
+      <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+          <div class="ray"></div>
+          <div class="text" id="view-count">Loading...</div>
+          <div>Views</div>
+          <div class="line topl"></div>
+          <div class="line leftl"></div>
+          <div class="line bottoml"></div>
+          <div class="line rightl"></div>
+        </div>
+      </div>
+      <!-- Earning Card -->
+      <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+          <div class="ray"></div>
+          <div class="text">₹0</div>
+          <div>Earning</div>
+          <div class="line topl"></div>
+          <div class="line leftl"></div>
+          <div class="line bottoml"></div>
+          <div class="line rightl"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <section class="about-section">
+    <img src="https://i.postimg.cc/4NGTy8Ls/IMG-20250719-154811.png" alt="About Image" />
+    <p style="margin-top: 1rem; max-width: 500px; margin-inline: auto;">Hi, I'm Unknown Gamer — creating epic Free Fire content & tech tutorials to help the gaming community grow smarter and sharper.</p>
+  </section>
+  <script>
+    // Hamburger mobile menu auto-close on link click
+    document.querySelectorAll('.nav-links-astro a').forEach(link => {
+      link.addEventListener('click', function() {
+        document.getElementById('nav-toggle').checked = false;
+      });
+    });
+  </script>
+  <script>
+    const CHANNEL_ID = "UC_JNgrNT7mtS0pyUNw9Ze1w";
+    const API_KEY = "AIzaSyBu21UDi8NuU5kyhxsg38-OjpV9mCLY-50";
+    async function updateYouTubeStats() {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${CHANNEL_ID}&key=${API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+        if (data.items && data.items.length > 0) {
+          const stats = data.items[0].statistics;
+          // Card Counters
+          document.getElementById('sub-count').textContent = formatNumber(stats.subscriberCount);
+          document.getElementById('video-count').textContent = formatNumber(stats.videoCount);
+          document.getElementById('view-count').textContent = formatNumber(stats.viewCount);
+          // Progress Bar
+          updateSubProgress(Number(stats.subscriberCount));
+        } else {
+          setErrorText();
+        }
+      } catch (error) {
+        setErrorText();
+      }
+    }
+    function setErrorText() {
+      document.getElementById('sub-count').textContent = "Error";
+      document.getElementById('video-count').textContent = "Error";
+      document.getElementById('view-count').textContent = "Error";
+      updateSubProgress(0);
+    }
+    function formatNumber(num) {
+      num = Number(num);
+      if (num >= 1e6) return (num / 1e6).toFixed(2) + "M";
+      if (num >= 1e3) return (num / 1e3).toFixed(2) + "K";
+      return num;
+    }
+    // Progress Milestone Bar
+    function updateSubProgress(current) {
+      let goal = 5000;
+      let percent = Math.min(100, (current/goal)*100);
+      document.getElementById('progress-fill').style.width = percent+"%";
+      document.getElementById('progress-value').innerText = formatNumber(current) + " / " + formatNumber(goal);
+    }
+    updateYouTubeStats();
+    setInterval(updateYouTubeStats, 30000);
+  </script>
+</body>
+</html>

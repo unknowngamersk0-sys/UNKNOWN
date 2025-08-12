@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>GG Mouse Pro 2 - Buy Premium</title>
+<style>
+    :root {
+        --pink: #ff00cc;
+        --neon: #ff00cc; /* Neon pink */
+    }
+    body {
+        background: #0e0e0e;
+        font-family: 'Poppins', sans-serif;
+        color: white;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        gap: 2rem;
+    }
+    img.logo {
+        width: 120px;
+        height: auto;
+    }
+    h1 {
+        text-align: center;
+        color: #fff;
+    }
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+    }
+    .stat-outer {
+        width: 300px;
+        height: 250px;
+        border-radius: 10px;
+        padding: 1px;
+        background: radial-gradient(circle 230px at 0% 0%, #ffffff, #0c0d0d);
+        position: relative;
+    }
+    .dot {
+        width: 5px;
+        height: 5px;
+        position: absolute;
+        background: #fff;
+        box-shadow: 0 0 10px #ffffff;
+        border-radius: 50%;
+        z-index: 2;
+        right: 10%;
+        top: 10%;
+        animation: moveDot 6s linear infinite;
+    }
+    @keyframes moveDot {
+        0%, 100% { top: 10%; right: 10%; }
+        25% { top: 10%; right: calc(100% - 35px); }
+        50% { top: calc(100% - 30px); right: calc(100% - 35px); }
+        75% { top: calc(100% - 30px); right: 10%; }
+    }
+    .card {
+        z-index: 1;
+        width: 100%;
+        height: 100%;
+        border-radius: 9px;
+        border: solid 1px #202222;
+        background: radial-gradient(circle 280px at 0% 0%, #444444, #0c0d0d);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+        box-sizing: border-box;
+        text-align: center;
+    }
+    /* Neon Black Buy Button Style */
+    .buy-btn {
+        text-decoration: none;
+        background: linear-gradient(135deg, #222 40%, #111 100%);
+        color: #fff;
+        font-weight: bold;
+        border: none;
+        padding: 12px 28px;
+        border-radius: 30px;
+        box-shadow: 0 0 12px var(--neon), 0 0 30px #222 inset;
+        font-family: 'Poppins', sans-serif;
+        font-size: 16px;
+        display: inline-block;
+        margin-top: 10px;
+        cursor: pointer;
+        transition: 0.2s;
+        letter-spacing: .5px;
+    }
+    .buy-btn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 0 24px var(--neon), 0 0 40px var(--neon), 0 0 50px #111 inset;
+    }
+</style>
+</head>
+<body>
+
+<img class="logo" src="https://images.sftcdn.net/images/t_app-icon-m/p/747a2064-cda2-444a-bc08-979f110b7d83/2937830182/gg-mouse-pro-logo" alt="GG Mouse Pro Logo">
+<h1>GG Mouse Pro 2</h1>
+
+<div class="card-container">
+
+    <!-- 1 Month Plan -->
+    <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+            <h2>1 Month Premium</h2>
+            <p>₹10 Only</p>
+            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%20Monthly%20Plan*,%20_priced%20at%20%E2%82%B910_.%20%F0%9F%98%8A"
+               target="_blank"
+               class="buy-btn">
+               Buy
+            </a>
+        </div>
+    </div>
+
+    <!-- 3 Month Plan -->
+    <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+            <h2>3 Months Premium</h2>
+            <p>₹30 Only</p>
+            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%203-Month%20Plan*,%20_priced%20at%20%E2%82%B930_.%20%F0%9F%98%8A"
+               target="_blank"
+               class="buy-btn">
+               Buy
+            </a>
+        </div>
+    </div>
+
+    <!-- 6 Month Plan -->
+    <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+            <h2>6 Months Premium</h2>
+            <p>₹60 Only</p>
+            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%206-Month%20Plan*,%20_priced%20at%20%E2%82%B960_.%20%F0%9F%98%8A"
+               target="_blank"
+               class="buy-btn">
+               Buy
+            </a>
+        </div>
+    </div>
+
+    <!-- 12 Month Plan -->
+    <div class="stat-outer">
+        <div class="dot"></div>
+        <div class="card">
+            <h2>12 Months Premium</h2>
+            <p>₹100 Only</p>
+            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%20Annual%20Plan*,%20_priced%20at%20%E2%82%B9100_.%20%F0%9F%98%8A"
+               target="_blank"
+               class="buy-btn">
+               Buy
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

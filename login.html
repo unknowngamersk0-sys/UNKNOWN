@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Unknown Gamer</title>
+  <style>
+    html, body {
+      height: 100%;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle 220px at 10% 10%, #ffffff22, #0c0d0d);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .outer {
+      width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 4vw;
+      position: relative;
+      box-sizing: border-box;
+    }
+    .dot {
+      width: 6px;
+      aspect-ratio: 1;
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 0 11px #ffffff;
+      border-radius: 100px;
+      z-index: 2;
+      right: 10vw;
+      top: 9vh;
+      animation: moveDot 6s linear infinite;
+    }
+    @keyframes moveDot {
+      0%,100% { top:10vh; right:10vw;}
+      25%{ top:8vh; right:75vw;}
+      50%{ top:88vh; right:75vw;}
+      75%{ top:85vh; right:10vw;}
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      min-width: 0;
+      border-radius: 16px;
+      background: #121212;
+      box-shadow: 0 0 40px #ff00cc33;
+      border: 1px solid #222;
+      color: #fff;
+      padding: 2rem 1.2rem 2rem 1.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: auto;
+      transition: max-width 0.3s;
+      box-sizing: border-box;
+    }
+    .ray {
+      width: 160px;
+      height: 32px;
+      border-radius: 100px;
+      position: absolute;
+      background-color: #c7c7c7;
+      opacity: 0.24;
+      box-shadow: 0 0 36px #fff;
+      filter: blur(11px);
+      transform-origin: 10%;
+      top: 0%;
+      left: 0;
+      transform: rotate(40deg);
+      pointer-events: none;
+    }
+    .text {
+      font-weight: bold;
+      font-size: 2rem;
+      background: linear-gradient(45deg, #fff, #ff00cc);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 2.1rem;
+      text-align: center;
+    }
+    /* --- Back Arrow Button --- */
+    .back-arrow-btn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 100;
+      width: 43px;
+      height: 43px;
+      background: rgba(30,30,30,0.85);
+      border-radius: 99px;
+      border: 2px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px #2b215733;
+      cursor: pointer;
+      transition: background 0.16s, box-shadow 0.18s, border 0.16s;
+      outline: none;
+      border: none;
+      text-decoration: none;
+    }
+    .back-arrow-btn:hover, .back-arrow-btn:focus {
+      background: rgba(255,0,204,0.12);
+      box-shadow: 0 2px 40px #ff00cc55;
+      border: 2px solid #ff00cc;
+    }
+    .back-arrow-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: #ff00cc;
+    }
+    @media (max-width: 700px) {
+      .back-arrow-btn {
+        top: 10px;
+        left: 10px;
+        width: 38px;
+        height: 38px;
+      }
+      .back-arrow-icon {
+        width: 17px;
+        height: 17px;
+      }
+    }
+    @media (max-width: 400px) {
+      .back-arrow-btn {
+        top: 5px;
+        left: 4px;
+        width: 33px;
+        height: 33px;
+      }
+      .back-arrow-icon {
+        width: 14px;
+        height: 14px;
+      }
+    }
+    /* --- End Back Arrow Button --- */
+
+    form { width: 100%; display: flex; flex-direction: column; }
+    input {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    input:focus {
+      outline: none;
+      border: 1px solid #ff00cc;
+      box-shadow: 0 0 5px #ff00cc;
+    }
+    .login-btn {
+      padding: 0.75rem;
+      background: #ff00cc;
+      border: none;
+      color: white;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: 0.3s;
+      margin-bottom: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .login-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff00cc;
+    }
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #fff;
+      color: #000;
+      border: 2px solid transparent;
+      padding: 0.75rem;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: 0.3s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .google-btn img {
+      height: 20px; width: 20px; margin-right: 10px;
+    }
+    .google-btn::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 30px;
+      padding: 2px;
+      background: linear-gradient(90deg, red, green, blue, orange, red);
+      background-size: 300% 300%;
+      animation: borderAnimation 4s linear infinite;
+      z-index: -1;
+    }
+    .google-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #fff;
+    }
+    .forgot-link {
+      text-align: center;
+      display: block;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      color: #ff00cc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      transition: 0.3s;
+      font-weight: 500;
+    }
+    .forgot-link:hover {
+      color: #fff;
+      text-shadow: 0 0 8px #ff00cc;
+    }
+    .or-divider {
+      text-align: center;
+      margin: 1.2rem 0 0.5rem;
+      font-size: 0.95rem;
+      color: #888;
+    }
+    .signup-btn {
+      display: block;
+      text-align: center;
+      padding: 0.7rem;
+      border: 2px solid #ff00cc;
+      color: #ff00cc;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .signup-btn:hover {
+      background: #ff00cc;
+      color: #fff;
+      box-shadow: 0 0 15px #ff00cc;
+      transform: scale(1.03);
+    }
+    .premium-btn {
+      display: block;
+      text-align: center;
+      margin-top: 1.2rem;
+      padding: 0.75rem;
+      background: linear-gradient(to right, #ff00cc, #3333ff);
+      border-radius: 30px;
+      font-weight: bold;
+      font-size: 1rem;
+      text-decoration: none;
+      color: white;
+      box-shadow: 0 0 15px #ff00cc;
+      transition: 0.3s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .premium-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px #ff00cc;
+    }
+    @keyframes borderAnimation {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    /* Custom Popup Responsive */
+    .custom-popup-bg {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.45);
+      justify-content: center;
+      align-items: center;
+    }
+    .custom-popup {
+      background: rgba(30,30,30,0.98);
+      border-radius: 18px;
+      box-shadow: 0 4px 32px #ff00cc55;
+      color: #fff;
+      padding: 2rem 1.2rem 1.3rem 1.2rem;
+      min-width: 140px;
+      max-width: 96vw;
+      width: auto;
+      margin: 16px auto;
+      text-align: center;
+      font-family: 'Segoe UI', sans-serif;
+      animation: popupAppear 0.25s;
+      word-break: break-word;
+      box-sizing: border-box;
+    }
+    .custom-popup .popup-icon {
+      font-size: 2.5rem;
+      color: #ff4d4f;
+      margin-bottom: 14px;
+    }
+    .custom-popup .popup-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+    .custom-popup .popup-detail {
+      font-size: 1rem;
+      color: #bbb;
+      margin-bottom: 16px;
+    }
+    .custom-popup .popup-btn {
+      padding: 10px 30px;
+      border: none;
+      border-radius: 8px;
+      background: #ff4d4f;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 600;
+      box-shadow: 0 0 9px #ff4d4f33;
+    }
+    .custom-popup .popup-btn:hover {
+      background: #d9363e;
+    }
+    @keyframes popupAppear {
+      0% { transform: scale(0.82); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    @media (max-width: 500px) {
+      .card, .custom-popup {
+        max-width: 99vw;
+        padding-left: 3vw;  padding-right: 3vw;
+        font-size: 0.96rem;
+      }
+      .text { font-size: 1.5rem; }
+    }
+    @media (max-width: 350px) {
+      .card, .custom-popup { padding: 7vw 2vw 8vw 2vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- BACK BUTTON (TOP LEFT) -->
+  <a class="back-arrow-btn" href="index.html" title="Back to home">
+    <svg class="back-arrow-icon" viewBox="0 0 28 28">
+      <path d="M18.5 25a1 1 0 01-.7-.29l-9.5-9a1 1 0 010-1.42l9.5-9a1 1 0 011.4 1.42L10.2 14l9 8.29A1 1 0 0118.5 25z"></path>
+    </svg>
+  </a>
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="text">Login</div>
+      <form id="login-form" autocomplete="off" novalidate>
+        <input type="email" placeholder="Email" id="email" required />
+        <input type="password" placeholder="Password" id="password" required />
+        <button type="submit" class="login-btn">Login</button>
+        <button type="button" id="google-login" class="login-btn google-btn">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" />
+          Login with Google
+        </button>
+        <a href="forgot.html" class="forgot-link">Forgot Password?</a>
+        <div class="or-divider">OR</div>
+        <a href="signup.html" class="signup-btn">Create a New Account</a>
+        <a href="viplogin.html" class="premium-btn">Member Login (Premium Access)</a>
+      </form>
+    </div>
+  </div>
+
+  <!-- Error/Success Popup (Added) -->
+  <div id="custom-popup-bg" class="custom-popup-bg">
+    <div class="custom-popup" id="custom-popup">
+      <div class="popup-icon" id="popup-icon">&#10060;</div>
+      <div class="popup-title" id="popup-title">Login Failed</div>
+      <div class="popup-detail" id="popup-detail">Invalid credentials. Please check your email and password.</div>
+      <button class="popup-btn" onclick="closePopup()">OK</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBz9q77JXL1hO-Ja2OowyH5xfNMTpLIWfo",
+      authDomain: "unknown-gamer-a007e.firebaseapp.com",
+      projectId: "unknown-gamer-a007e",
+      storageBucket: "unknown-gamer-a007e.appspot.com",
+      messagingSenderId: "378983750414",
+      appId: "1:378983750414:web:6f70e997e855c3037f555f",
+      measurementId: "G-KBCY211XG8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Custom popup logic
+    function showPopup({icon="&#10060;", title="Error", detail="Something went wrong!"}) {
+      document.getElementById("popup-icon").innerHTML = icon;
+      document.getElementById("popup-title").textContent = title;
+      document.getElementById("popup-detail").textContent = detail;
+      document.getElementById("custom-popup-bg").style.display = "flex";
+    }
+    function closePopup() {
+      document.getElementById("custom-popup-bg").style.display = "none";
+    }
+    // Popup can be closed by clicking outside (bg)
+    document.getElementById('custom-popup-bg').addEventListener('click', function(event) {
+      if (event.target === this) closePopup();
+    });
+
+    // Email login validation and popup
+    document.getElementById("login-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      if (!email) {
+        showPopup({ title: "Missing Email", detail: "Please enter your email address." });
+        return;
+      }
+      if (!password) {
+        showPopup({ title: "Missing Password", detail: "Please enter your password." });
+        return;
+      }
+      auth.signInWithEmailAndPassword(email, password)
+        .then(() => {
+          // SET userLoggedIn for protection in home.html
+          localStorage.setItem("userLoggedIn", "true");
+          showPopup({
+            icon: "&#9989;",
+            title: "Login Successful!",
+            detail: "You will be redirected shortly."
+          });
+          setTimeout(() => { window.location.href = "home.html"; }, 1500);
+        })
+        .catch((error) => {
+          let message = "An error occurred.";
+          if (error.code === 'auth/invalid-login-credentials' || error.code === "auth/wrong-password") {
+            message = "Invalid email or password.";
+          } else if (error.code === "auth/user-not-found") {
+            message = "No such account exists.";
+          } else if (error.code === "auth/network-request-failed") {
+            message = "Network issue. Try again.";
+          } else if (error.message) {
+            message = error.message;
+          }
+          showPopup({
+            icon: "&#10060;",
+            title: "Login Failed",
+            detail: message
+          });
+        });
+    });
+
+    // Google login
+    const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+    document.getElementById("google-login").addEventListener("click", function () {
+      auth.signInWithPopup(googleProvider)
+        .then(() => {
+          localStorage.setItem("userLoggedIn", "true");
+          showPopup({
+            icon: "&#9989;",
+            title: "Google Login Successful!",
+            detail: "You will be redirected shortly."
+          });
+          setTimeout(() => { window.location.href = "home.html"; }, 1500);
+        })
+        .catch((error) => {
+          let message = "Google Sign in failed.";
+          if (error && error.message) message = error.message;
+          showPopup({
+            icon: "&#10060;",
+            title: "Google Login Failed",
+            detail: message
+          });
+        });
+    });
+  </script>
+</body>
+</html>

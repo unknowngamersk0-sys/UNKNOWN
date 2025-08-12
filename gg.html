@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modern Popup</title>
+<style>
+  /* Background overlay */
+  #popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s;
+  }
+  #popupOverlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  /* Popup card */
+  #popupCard {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    padding: 30px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    animation: popupFadeIn 0.5s ease forwards;
+  }
+  @keyframes popupFadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  #popupCard img {
+    width: 80px;
+    margin-bottom: 20px;
+  }
+  #popupCard h2 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  #popupCard button {
+    padding: 12px 30px;
+    background: #ff4500; /* fiery orange-red */
+    border: none;
+    color: white;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  #popupCard button:hover {
+    background-color: #e03e00;
+  }
+</style>
+</head>
+<body>
+
+<div id="popupOverlay">
+  <div id="popupCard">
+    <img src="data:image/png;base64,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" alt="Logo" />
+    <h2>COMING SOON IN 2K</h2>
+    <button id="goHomeBtn">Go to Home</button>
+  </div>
+</div>
+
+<script>
+  // Show popup on page load
+  window.onload = function() {
+    const popup = document.getElementById('popupOverlay');
+    const goHomeBtn = document.getElementById('goHomeBtn');
+
+    popup.classList.add('show');
+
+    // Redirect to home.html after 5 seconds
+    setTimeout(() => {
+      window.location.href = 'home.html';
+    }, 5000);
+
+    // Button click redirects immediately
+    goHomeBtn.addEventListener('click', () => {
+      window.location.href = 'home.html';
+    });
+  };
+</script>
+
+</body>
+</html>

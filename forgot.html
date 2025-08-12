@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Forgot Password | Unknown Gamer</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .outer {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle 250px at 10% 10%, #ffffff22, #0c0d0d);
+      padding: 2rem;
+    }
+
+    .dot {
+      width: 5px;
+      aspect-ratio: 1;
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 0 10px #ffffff;
+      border-radius: 100px;
+      z-index: 2;
+      right: 10%;
+      top: 10%;
+      animation: moveDot 6s linear infinite;
+    }
+
+    @keyframes moveDot {
+      0%, 100% { top: 10%; right: 10%; }
+      25% { top: 10%; right: calc(100% - 35px); }
+      50% { top: calc(100% - 30px); right: calc(100% - 35px); }
+      75% { top: calc(100% - 30px); right: 10%; }
+    }
+
+    .card {
+      width: 100%;
+      max-width: 360px;
+      border-radius: 15px;
+      background: #121212;
+      border: 1px solid #222;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 0 40px #ff00cc33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+
+    .ray {
+      width: 200px;
+      height: 45px;
+      border-radius: 100px;
+      position: absolute;
+      background-color: #c7c7c7;
+      opacity: 0.25;
+      box-shadow: 0 0 50px #fff;
+      filter: blur(12px);
+      transform-origin: 10%;
+      top: 0%;
+      left: 0;
+      transform: rotate(40deg);
+      pointer-events: none;
+    }
+
+    .text {
+      font-weight: bold;
+      font-size: 2rem;
+      background: linear-gradient(45deg, #ffffff, #ff00cc);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    input {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .reset-btn {
+      padding: 0.75rem;
+      background: #ff00cc;
+      border: none;
+      color: white;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+
+    .reset-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff00cc;
+    }
+
+    .back-link {
+      margin-top: 1rem;
+      text-align: center;
+      display: block;
+      color: #ff00cc;
+      text-decoration: none;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .back-link:hover {
+      color: #fff;
+      text-shadow: 0 0 10px #ff00cc;
+    }
+
+    #message {
+      margin-top: 1rem;
+      text-align: center;
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: #ff00cc;
+    }
+  </style>
+</head>
+<body>
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="text">Reset Password</div>
+      <form id="reset-form">
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <button type="submit" class="reset-btn">Send Reset Link</button>
+        <a href="login.html" class="back-link">← Back to Login</a>
+        <p id="message"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+  <script>
+    // ✅ Firebase config (corrected)
+    const firebaseConfig = {
+      apiKey: "AIzaSyBz9q77JXL1hO-Ja2OowyH5xfNMTpLIWfo",
+      authDomain: "unknown-gamer-a007e.firebaseapp.com",
+      projectId: "unknown-gamer-a007e",
+      storageBucket: "unknown-gamer-a007e.appspot.com", // ✅ fixed here
+      messagingSenderId: "378983750414",
+      appId: "1:378983750414:web:6f70e997e855c3037f555f",
+      measurementId: "G-KBCY211XG8"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // Forgot password logic
+    document.getElementById("reset-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const email = document.getElementById("email").value;
+      const messageBox = document.getElementById("message");
+
+      auth.sendPasswordResetEmail(email)
+        .then(() => {
+          messageBox.style.color = "#00ff99";
+          messageBox.textContent = "✅ Reset link sent to your email. Check inbox or spam.";
+        })
+        .catch((error) => {
+          messageBox.style.color = "#ff4444";
+          messageBox.textContent = "❌ Error: " + error.message;
+        });
+    });
+  </script>
+</body>
+</html>

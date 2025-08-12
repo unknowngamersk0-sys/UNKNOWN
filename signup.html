@@ -1,0 +1,297 @@
+<!-- 🌟 Glowing Signup Card with Firebase Auth + Password Strength Meter + Back Button -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Signup with Firebase</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      background: #000;
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0; padding: 0;
+    }
+    .outer {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: radial-gradient(circle 250px at 10% 10%, #ffffff22, #0c0d0d);
+      padding: 2rem;
+    }
+    .dot {
+      width: 5px;
+      aspect-ratio: 1;
+      position: absolute;
+      background-color: #fff;
+      box-shadow: 0 0 10px #ffffff;
+      border-radius: 100px;
+      z-index: 2;
+      right: 10%;
+      top: 10%;
+      animation: moveDot 6s linear infinite;
+    }
+    @keyframes moveDot {
+      0%, 100% { top: 10%; right: 10%; }
+      25% { top: 10%; right: calc(100% - 35px); }
+      50% { top: calc(100% - 30px); right: calc(100% - 35px); }
+      75% { top: calc(100% - 30px); right: 10%; }
+    }
+    .card {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      background: #121212;
+      border: 1px solid #222;
+      padding: 2rem;
+      position: relative;
+      box-shadow: 0 0 40px #ff00cc33;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+    }
+    .ray {
+      width: 200px;
+      height: 45px;
+      border-radius: 100px;
+      position: absolute;
+      background-color: #c7c7c7;
+      opacity: 0.25;
+      box-shadow: 0 0 50px #fff;
+      filter: blur(12px);
+      transform-origin: 10%;
+      top: 0%;
+      left: 0;
+      transform: rotate(40deg);
+      pointer-events: none;
+    }
+    .text {
+      font-weight: bold;
+      font-size: 2rem;
+      background: linear-gradient(45deg, #ffffff, #ff00cc);
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-bottom: 2rem;
+    }
+    /* ===== Back Arrow Button ===== */
+    .back-arrow-btn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 101;
+      width: 43px;
+      height: 43px;
+      background: rgba(30,30,30,0.85);
+      border-radius: 99px;
+      border: 2px solid #222;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 12px #2b215733;
+      cursor: pointer;
+      transition: background 0.16s, box-shadow 0.18s, border 0.16s;
+      outline: none;
+      border: none;
+      text-decoration: none;
+    }
+    .back-arrow-btn:hover, .back-arrow-btn:focus {
+      background: rgba(255,0,204,0.12);
+      box-shadow: 0 2px 40px #ff00cc55;
+      border: 2px solid #ff00cc;
+    }
+    .back-arrow-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      fill: #ff00cc;
+    }
+    @media (max-width: 700px) {
+      .back-arrow-btn { top: 10px; left: 10px; width: 38px; height: 38px; }
+      .back-arrow-icon { width: 17px; height: 17px; }
+    }
+    @media (max-width: 400px) {
+      .back-arrow-btn { top: 5px; left: 4px; width: 32px; height: 32px; }
+      .back-arrow-icon { width: 14px; height: 14px; }
+    }
+    /* ===== End Back Arrow ===== */
+    form {
+      width: 100%; display: flex; flex-direction: column;
+    }
+    input {
+      padding: 0.75rem 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #1f1f1f;
+      color: #fff;
+      font-size: 1rem;
+    }
+    input:focus {
+      outline: none;
+      border: 1px solid #ff00cc;
+      box-shadow: 0 0 5px #ff00cc;
+    }
+    .signup-btn {
+      padding: 0.75rem;
+      background: #ff00cc;
+      border: none;
+      color: white;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+    .signup-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ff00cc;
+    }
+    .or-divider {
+      text-align: center;
+      margin: 1.2rem 0 0.5rem;
+      font-size: 0.9rem;
+      color: #888;
+    }
+    .login-btn, .premium-btn {
+      display: block;
+      text-align: center;
+      padding: 0.7rem;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 500;
+      transition: 0.3s;
+      font-size: 1rem;
+    }
+    .login-btn {
+      border: 2px solid #ff00cc;
+      color: #ff00cc;
+    }
+    .login-btn:hover {
+      background: #ff00cc;
+      color: #fff;
+      box-shadow: 0 0 15px #ff00cc;
+      transform: scale(1.03);
+    }
+    .premium-btn {
+      margin-top: 0.8rem;
+      border: 2px solid #00ffc8;
+      color: #00ffc8;
+    }
+    .premium-btn:hover {
+      background: #00ffc8;
+      color: #000;
+      box-shadow: 0 0 15px #00ffc8;
+      transform: scale(1.03);
+    }
+    /* Password Strength Meter */
+    .strength-meter { height: 8px; width: 100%; background-color: #222; border-radius: 8px; overflow: hidden; margin-top: -0.5rem; margin-bottom: 1rem; }
+    .strength-meter-fill { height: 100%; width: 0%; transition: width 0.3s ease; background-color: red; border-radius: 8px; }
+    .strength-label { font-size: 0.85rem; margin-bottom: 1rem; color: #ccc; }
+  </style>
+</head>
+<body>
+  <!-- BACK BUTTON (TOP LEFT) -->
+  <a class="back-arrow-btn" href="index.html" title="Back to home">
+    <svg class="back-arrow-icon" viewBox="0 0 28 28">
+      <path d="M18.5 25a1 1 0 01-.7-.29l-9.5-9a1 1 0 010-1.42l9.5-9a1 1 0 011.4 1.42L10.2 14l9 8.29A1 1 0 0118.5 25z"></path>
+    </svg>
+  </a>
+  <div class="outer">
+    <div class="dot"></div>
+    <div class="card">
+      <div class="ray"></div>
+      <div class="text">Create Account</div>
+      <form id="signup-form">
+        <input type="text" placeholder="Name" id="name" required />
+        <input type="email" placeholder="Email" id="email" required />
+        <input type="password" placeholder="Password" id="password" required />
+        <div class="strength-meter"><div id="strength-bar" class="strength-meter-fill"></div></div>
+        <div id="strength-label" class="strength-label"></div>
+        <input type="password" placeholder="Confirm Password" id="confirm-password" required />
+        <button type="submit" class="signup-btn">Sign Up</button>
+        <div class="or-divider">OR</div>
+        <a href="login.html" class="login-btn">Already have an account? Login</a>
+      </form>
+      <div class="or-divider">── Premium Users ──</div>
+      <a href="Viplogin.html" class="premium-btn">Premium Member Login</a>
+    </div>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+
+  <script>
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyBz9q77JXL1hO-Ja2OowyH5xfNMTpLIWfo",
+      authDomain: "unknown-gamer-a007e.firebaseapp.com",
+      projectId: "unknown-gamer-a007e",
+      storageBucket: "unknown-gamer-a007e.appspot.com",
+      messagingSenderId: "378983750414",
+      appId: "1:378983750414:web:6f70e997e855c3037f555f",
+      measurementId: "G-KBCY211XG8"
+    };
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+    const auth = firebase.auth();
+
+    // Password Strength Meter Logic
+    const passwordInput = document.getElementById("password");
+    const strengthBar = document.getElementById("strength-bar");
+    const strengthLabel = document.getElementById("strength-label");
+
+    passwordInput.addEventListener("input", () => {
+      const val = passwordInput.value;
+      const result = calculateStrength(val);
+      strengthBar.style.width = result.percent + "%";
+      strengthBar.style.backgroundColor = result.color;
+      strengthLabel.textContent = result.label;
+    });
+
+    function calculateStrength(password) {
+      let strength = 0;
+      if (password.length >= 6) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^a-zA-Z0-9]/.test(password)) strength++;
+      const percent = (strength / 5) * 100;
+      const color = ["red", "orange", "gold", "#66ff66", "#00ff99"][strength - 1] || "red";
+      const label = ["Very Weak", "Weak", "Okay", "Strong", "Very Strong"][strength - 1] || "Too Short";
+      return { percent, color, label };
+    }
+
+    // Signup Handler
+    document.getElementById("signup-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (password.length < 6) {
+        alert("❌ Password must be at least 6 characters.");
+        return;
+      }
+      if (password !== confirmPassword) {
+        alert("❌ Passwords do not match.");
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert("✅ Account created successfully!");
+          // Redirect or do something else
+        })
+        .catch((error) => {
+          alert("❌ Error: " + error.message);
+        });
+    });
+  </script>
+</body>
+</html>
