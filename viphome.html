@@ -281,7 +281,7 @@
 
       <div class="panel">
         <h4>Admin Help</h4>
-        <p class="muted-small">If your VIP is inactive, ask admin to activate it. Admin will need the email send your Email To admin .</p>
+        <p class="muted-small">If your VIP is inactive, ask admin to activate it. Admin will need the email send your Email To admin.</p>
         <button class="btn" style="background:linear-gradient(90deg,var(--pink),var(--blue)); color:white;" onclick="showAdminDialog(getCurrentEmail())">Ask Admin (Copy Email)</button>
       </div>
     </div>
@@ -299,7 +299,7 @@
     </div>
   </div>
 
-  <div id="copyToast">
+  <div id="copyToast" style="background:rgba(30,30,40,0.95); border:1px solid rgba(255,0,204,0.2);">
     <div class="icon">✓</div>
     <div class="body">
       <div class="title" id="toast-title">Copied</div>
@@ -307,11 +307,13 @@
     </div>
   </div>
 
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 
   <script>
+    // ---------- Firebase init ----------
     const firebaseConfig = {
       apiKey: "AIzaSyA7oSJNvZxv2aBYNUGfj4UWJdm6yIoUwC8",
       authDomain: "vip-membership-b131a.firebaseapp.com",
@@ -324,10 +326,12 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
 
+    // ---------- Toast helpers ----------
     const toast = document.getElementById('copyToast');
     const toastTitle = document.getElementById('toast-title');
     const toastValue = document.getElementById('toast-value');
     let toastTimer = null;
+
     function showToast(title, value){
       toastTitle.textContent = title;
       toastValue.textContent = value;
@@ -339,7 +343,7 @@
       if(navigator.clipboard){
         navigator.clipboard.writeText(text).then(() => {
           showToast(`${label} copied!`, text);
-        });
+        }).catch(()=>{ /* ignore */ });
       }
     }
     function copyCredential(id){
@@ -360,98 +364,158 @@
     }
     function openProfile(){ alert('Open profile action'); }
 
+    // ---------- Logout ----------
     document.getElementById('logout-btn').addEventListener('click', ()=>{
       auth.signOut().then(()=> window.location.href = 'viplogin.html');
     });
 
-   auth.onAuthStateChanged(async user => {
-  if(!user) return window.location.replace('viplogin.html');
+    // ---------- Main auth + Firestore logic (single listener, cleaned) ----------
+    auth.onAuthStateChanged(async user => {
+      if(!user){
+        return window.location.replace('viplogin.html');
+      }
 
-  // Get Firestore VIP data
-  const userDoc = await db.collection("UNKNOWN").doc(user.email).get();
-  if(!userDoc.exists){
-    showAdminDialog(user.email);
-    // Credentials area disable
-    document.getElementById('fs-email').textContent = 'Upgrade to view';
-    document.getElementById('fs-password').textContent = 'Upgrade to view';
-    document.getElementById('credential-area').style.opacity = '0.6';
-    document.getElementById('credential-area').style.pointerEvents = 'none';
-    return;
-  }
+      try {
+        // Fetch user record
+        const userDocRef = db.collection("UNKNOWN").doc(user.email.toLowerCase());
+        const userDoc = await userDocRef.get();
 
-  const data = userDoc.data();
-  const subscriptionTypeRaw = (data.subscriptionType || 'Not VIP').trim();
-  const subscriptionType = subscriptionTypeRaw.toLowerCase();
+        if(!userDoc.exists){
+          // No VIP record -> lock credentials and show admin popup
+          lockCredentials();
+          showAdminDialog(user.email);
+          paintStatus({
+            name: user.displayName || 'User',
+            typeRaw: 'Not VIP',
+            expiryText: '—',
+            daysLeft: null,
+            expired: true
+          });
+          return;
+        }
 
-  // Expiry check
-  let expired = false, showRenew = false, expiryText='—', daysLeft=null;
-  if(data.subscriptionExpiry && typeof data.subscriptionExpiry.toDate==='function'){
-    const expiryDate = data.subscriptionExpiry.toDate();
-    expiryText = `Expiry: ${expiryDate.toLocaleDateString()}`;
-    daysLeft = Math.ceil((expiryDate - new Date()) / (1000*60*60*24));
-    if(daysLeft<=0){ expired=true; showRenew=true; }
-  }
+        const data = userDoc.data();
+        const subscriptionTypeRaw = (data.subscriptionType || 'Not VIP').trim();
+        const subscriptionType = subscriptionTypeRaw.toLowerCase();
 
-  // Update dashboard status
-  document.getElementById('vip-name').textContent = `Hi! ${data.HI || 'User'}`;
-  document.getElementById('vip-type').textContent = subscriptionTypeRaw;
-  document.getElementById('vip-expiry').textContent = expiryText;
-  document.getElementById('status-main').textContent = subscriptionTypeRaw;
-  document.getElementById('status-sub').textContent = expiryText;
-  document.getElementById('vip-days-left').textContent = expired ? 'Expired' : (daysLeft ? `${daysLeft} days left` : '--');
-  document.getElementById('renew-btn').style.display = showRenew ? 'inline-block' : 'none';
+        // Expiry compute
+        let expired = false, showRenew = false, expiryText='—', daysLeft=null, expiryDate=null;
+        if(data.subscriptionExpiry && typeof data.subscriptionExpiry.toDate==='function'){
+          expiryDate = data.subscriptionExpiry.toDate();
+          expiryText = `Expiry: ${expiryDate.toLocaleDateString()}`;
+          daysLeft = Math.ceil((expiryDate - new Date()) / (1000*60*60*24));
+          if(daysLeft <= 0){ expired=true; showRenew=true; }
+        }
 
-  // Credentials visibility logic
-  if(subscriptionType === 'not vip'){
-    // Disable credential area (hide email/pass)
-    document.getElementById('fs-email').textContent = 'Upgrade to view';
-    document.getElementById('fs-password').textContent = 'Upgrade to view';
-    document.getElementById('credential-area').style.opacity = '0.6';
-    document.getElementById('credential-area').style.pointerEvents = 'none';
-    showAdminDialog(user.email);  // Show popup
-  } else {
-    // ENABLE credential area
-    document.getElementById('credential-area').style.opacity = '1';
-    document.getElementById('credential-area').style.pointerEvents = 'auto';
+        // Update dashboard header
+        paintStatus({
+          name: data.HI || user.displayName || 'User',
+          typeRaw: subscriptionTypeRaw,
+          expiryText,
+          daysLeft,
+          expired
+        });
 
-    // Get credential doc name (eg "1month", "3month", etc)
-    let credDocName = '';
-    for(let m=1; m<=12; m++){
-      if(subscriptionType.includes(m + ' month')){ credDocName = m + 'month'; break; }
-    }
-    if(subscriptionType.includes('monthly')) credDocName = '1month';
+        // Visual notice
+        updateVisuals({ expired, daysLeft });
 
-    if(credDocName){
-      const credDoc = await db.collection("UNKNOWN").doc(credDocName).get();
-      document.getElementById('fs-email').textContent = credDoc.exists ? (credDoc.data().EMAIL || 'N/A') : 'No data';
-      document.getElementById('fs-password').textContent = credDoc.exists ? (credDoc.data().PASSWORD || 'N/A') : 'No data';
-    }
-  }
+        // Credentials access control
+        if(subscriptionType === 'not vip' || expired){
+          lockCredentials();
+          if(subscriptionType === 'not vip'){
+            showAdminDialog(user.email);
+          }
+        } else {
+          unlockCredentials();
+          // Decide which credential doc to read (1month..12month)
+          let credDocName = '';
+          for(let m=1; m<=12; m++){
+            if(subscriptionType.includes(m + ' month')){ credDocName = m + 'month'; break; }
+          }
+          if(subscriptionType.includes('monthly')) credDocName = '1month';
+          // (Optional) handle '1 year' / '12 month'
+          if(subscriptionType.includes('1 year') || subscriptionType.includes('12 month')) credDocName = '12month';
 
-  // If expired, plans clickable (redirect buygg.html)
-  if(expired){
-    document.querySelectorAll('.sub-item').forEach(item=>{
-      item.onclick = ()=>{ window.location.href='buygg.html'; }
+          if(credDocName){
+            const credDoc = await db.collection("UNKNOWN").doc(credDocName).get();
+            document.getElementById('fs-email').textContent = credDoc.exists ? (credDoc.data().EMAIL || 'N/A') : 'No data';
+            document.getElementById('fs-password').textContent = credDoc.exists ? (credDoc.data().PASSWORD || 'N/A') : 'No data';
+          } else {
+            document.getElementById('fs-email').textContent = 'N/A';
+            document.getElementById('fs-password').textContent = 'N/A';
+          }
+        }
+
+        // Plans clickable if expired
+        if(expired){
+          document.querySelectorAll('.sub-item').forEach(item=>{
+            item.onclick = ()=>{ window.location.href='buygg.html'; }
+          });
+          document.getElementById('renew-btn').style.display = 'inline-block';
+        } else {
+          document.querySelectorAll('.sub-item').forEach(item=>{
+            item.onclick = null;
+          });
+          document.getElementById('renew-btn').style.display = 'none';
+        }
+
+      } catch (err) {
+        // In case of error, keep user on page but lock credentials
+        lockCredentials();
+        console.error(err);
+      }
     });
-  }
-});
-auth.onAuthStateChanged(async user => {
-  if(!user) return window.location.replace('viplogin.html');
 
-  try {
-    // yaha aapka purana firestore fetch aur logic
-    const userDoc = await db.collection("UNKNOWN").doc(user.email).get();
-    // ... rest of your code
-  } catch (err) {
-    document.getElementById('error-msg').textContent = err.message;
-  }
-});
+    // ---------- Helpers ----------
+    function paintStatus({ name, typeRaw, expiryText, daysLeft, expired }){
+      document.getElementById('vip-name').textContent = `Hi! ${name}`;
+      document.getElementById('vip-type').textContent = typeRaw;
+      document.getElementById('vip-expiry').textContent = expiryText;
+      document.getElementById('vip-days-left').textContent = expired
+        ? 'Expired'
+        : (Number.isFinite(daysLeft) ? `${daysLeft} days left` : '--');
 
+      document.getElementById('status-main').textContent = typeRaw;
+      document.getElementById('status-sub').textContent = expiryText;
 
+      const pill = document.getElementById('status-pill');
+      if(expired){
+        pill.textContent = 'INACTIVE';
+      } else {
+        pill.textContent = 'ACTIVE';
+      }
+    }
+
+    function updateVisuals({ expired, daysLeft }){
+      const card = document.getElementById('vipCard');
+      const warn = document.getElementById('warning-text');
+
+      if(expired){
+        card.classList.remove('active');
+        warn.style.display = 'none';
+      } else {
+        card.classList.add('active');
+        if(Number.isFinite(daysLeft) && daysLeft <= 3){
+          warn.style.display = 'block';
+        } else {
+          warn.style.display = 'none';
+        }
+      }
+    }
+
+    function lockCredentials(){
+      document.getElementById('fs-email').textContent = 'Upgrade to view';
+      document.getElementById('fs-password').textContent = 'Upgrade to view';
+      const area = document.getElementById('credential-area');
+      area.style.opacity = '0.6';
+      area.style.pointerEvents = 'none';
+    }
+
+    function unlockCredentials(){
+      const area = document.getElementById('credential-area');
+      area.style.opacity = '1';
+      area.style.pointerEvents = 'auto';
+    }
   </script>
-</body>
-</html>
-
-</script>
 </body>
 </html>
