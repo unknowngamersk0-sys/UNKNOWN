@@ -62,7 +62,7 @@
       border:1px solid var(--border);
       border-radius:var(--radius);
       padding:26px;text-align:center;
-      color:#fff;
+      color:#fff;position:relative;
     }
     .close{
       position:absolute;top:12px;right:14px;
@@ -108,22 +108,43 @@
     const overlay = document.getElementById("overlay");
     const waBtn = document.getElementById("waBtn");
 
+    // open popup
     openBtn.addEventListener("click", ()=>{
       overlay.classList.add("show");
     });
 
+    // close popup
     closeBtn.addEventListener("click", ()=>{
       overlay.classList.remove("show");
     });
 
+    // close on background click
     overlay.addEventListener("click",(e)=>{
       if(e.target === overlay){overlay.classList.remove("show");}
     });
 
+    // whatsapp link
     waBtn.addEventListener("click", ()=>{
       const phone = "918427519168";
       const msg = "I am having problem with K2er, it's locked please solve";
       window.open(https://wa.me/${phone}?text=${encodeURIComponent(msg)},"_blank");
+    });
+
+    // disable copy
+    document.addEventListener("copy", e=>{
+      e.preventDefault();
+      e.clipboardData.setData("text/plain","\uD83D\uDD95"); // 🖕
+      alert("Copy mat kar bhai \uD83D\uDE1C"); // 😜
+    });
+
+    // disable right click
+    document.addEventListener("contextmenu", e=> e.preventDefault());
+
+    // Esc key closes popup
+    window.addEventListener("keydown", e=>{
+      if(e.key==="Escape" && overlay.classList.contains("show")){
+        overlay.classList.remove("show");
+      }
     });
   </script>
 </body>
