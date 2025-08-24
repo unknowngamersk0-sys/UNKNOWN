@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>K2ER — VIP Access</title>
 
+  <!-- Fonts (system stack for speed; B/W theme) -->
   <style>
     :root{
       --bg:#000;
@@ -16,135 +17,248 @@
       --radius:22px;
       --transition:.45s cubic-bezier(.2,.8,.2,1);
     }
+
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%}
     body{
-      font-family:sans-serif;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
       background:#000 url("https://i.ibb.co/7tD3zFfg/Anime-Lockscreen-Aesthetic-Black.jpg") no-repeat center/cover;
       color:var(--fg);
       overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      user-select:none;
     }
+    /* dark overlay for consistent B/W depth */
     body::before{
-      content:"";position:fixed;inset:0;
+      content:"";
+      position:fixed;inset:0;
       background:linear-gradient(180deg,rgba(0,0,0,.65),rgba(0,0,0,.85));
       z-index:0;
     }
 
-    .scene{position:relative;z-index:1;height:100%;display:grid;place-items:center;}
+    /* ---------------- SCENE ---------------- */
+    .scene{
+      position:relative;z-index:1;
+      height:100%;display:grid;place-items:center;
+    }
     .stage{display:flex;flex-direction:column;align-items:center;gap:18px}
 
-    .logo{position:fixed;top:22px;left:50%;transform:translateX(-50%);
+    /* floating white particles */
+    .particles{position:fixed;inset:0;z-index:1;pointer-events:none;mix-blend-mode:screen;}
+    .dot{
+      position:absolute;width:3px;height:3px;border-radius:50%;background:#fff;opacity:.35;
+      animation:rise linear infinite;
+      box-shadow:0 0 8px rgba(255,255,255,.5);
+    }
+    @keyframes rise{from{transform:translateY(110vh)}to{transform:translateY(-15vh)}}
+
+    /* LOGO (top) */
+    .logo{
+      position:fixed;top:22px;left:50%;transform:translateX(-50%);
       width:120px;height:120px;border-radius:24px;overflow:hidden;
-      box-shadow:0 0 26px rgba(255,255,255,.28);z-index:2;
+      box-shadow:0 0 26px rgba(255,255,255,.28);
+      z-index:2;
+      animation:fadeDown .9s ease .2s both;
     }
     .logo img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%)}
+    @keyframes fadeDown{from{opacity:0;transform:translate(-50%,-18px)}to{opacity:1;transform:translate(-50%,0)}}
 
+    /* BUTTONS — shared premium style */
     .btn{
-      padding:15px 36px;
+      --padY:15px; --padX:36px;
+      position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;
+      padding:var(--padY) var(--padX);
       background:linear-gradient(135deg,#000,#2a2a2a);
       color:#fff;border:1px solid var(--border);
-      border-radius:14px;font-weight:700;font-size:16px;
-      text-transform:uppercase;cursor:pointer;
-      transition:all .3s ease;
+      border-radius:14px;letter-spacing:.06em;font-weight:700;font-size:16px;text-transform:uppercase;
+      cursor:pointer;overflow:hidden;
+      box-shadow:0 10px 24px rgba(0,0,0,.6), 0 0 18px rgba(255,255,255,.08) inset;
+      transition:transform var(--transition), box-shadow var(--transition), background var(--transition), opacity .25s ease;
+      isolation:isolate;
     }
-    .btn:hover{transform:scale(1.05);}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .btn:hover{transform:translateY(-1px) scale(1.02);box-shadow:0 12px 28px rgba(0,0,0,.7),0 0 26px rgba(255,255,255,.12) inset}
+    /* white light streak */
+    .btn::before{
+      content:"";position:absolute;inset:-8px;z-index:-1;
+      background:conic-gradient(from 0deg, rgba(255,255,255,.2), transparent 25%, transparent 75%, rgba(255,255,255,.2));
+      filter:blur(10px);opacity:.18;animation:spin 6s linear infinite;
+      border-radius:inherit;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    /* sweep shine */
+    .btn::after{
+      content:"";position:absolute;inset:0;left:-120%;
+      background:linear-gradient(120deg, transparent, rgba(255,255,255,.25), transparent);
+      transform:skewX(-25deg);
+      transition:left .9s ease;
+    }
+    .btn:hover::after{left:140%}
 
-    /* POPUP */
+    /* subtle ring pulse behind buttons */
+    .ring{
+      position:absolute;inset:-6px;border-radius:16px;pointer-events:none;z-index:-2;
+      border:1px solid rgba(255,255,255,.15);
+      box-shadow:0 0 60px rgba(255,255,255,.08);
+      animation:ring 2.4s ease-in-out infinite;
+    }
+    @keyframes ring{
+      0%,100%{box-shadow:0 0 54px rgba(255,255,255,.10)}
+      50%{box-shadow:0 0 90px rgba(255,255,255,.18)}
+    }
+
+    /* POPUP (glass) */
     .overlay{
       position:fixed;inset:0;background:rgba(0,0,0,.6);
-      backdrop-filter:blur(6px);display:none;
-      align-items:center;justify-content:center;z-index:30;
+      backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:30;
+      animation:fadeIn .3s ease both;
     }
-    .overlay.show{display:flex;}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     .popup{
       width:min(420px,92vw);
       background:var(--glass);
       border:1px solid var(--border);
       border-radius:var(--radius);
-      padding:26px;text-align:center;
-      color:#fff;position:relative;
+      padding:26px 24px 24px;
+      box-shadow:var(--shadow);
+      transform:scale(.86) translateY(6px);
+      opacity:0;
+      transition:transform .35s ease, opacity .35s ease;
+      position:relative;overflow:hidden;text-align:center;
+    }
+    .overlay.show .popup{transform:scale(1) translateY(0);opacity:1}
+    .popup::before{
+      content:"";position:absolute;inset:-2px;border-radius:inherit;
+      background:conic-gradient(from 180deg, rgba(255,255,255,.22), transparent 30%, transparent 70%, rgba(255,255,255,.22));
+      filter:blur(10px);opacity:.2;z-index:-1;
+      animation:spin 12s linear infinite;
     }
     .close{
-      position:absolute;top:12px;right:14px;
-      font-size:20px;cursor:pointer;color:#fff;
-      background:#111;border:none;border-radius:8px;
-      width:32px;height:32px;
+      position:absolute;top:12px;right:14px;font-size:22px;line-height:1;width:34px;height:34px;border-radius:10px;border:1px solid var(--border);
+      background:#0a0a0a;color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .25s ease, background .25s ease;
     }
-    .cred{margin-top:15px;text-align:left;font-family:monospace;}
-    .row{margin:6px 0}
+    .close:hover{transform:rotate(90deg) scale(1.08);background:#111}
+
+    .title{
+      letter-spacing:.18em;font-weight:800;font-size:13px;opacity:.85;margin-bottom:8px;text-transform:uppercase
+    }
+    .cred{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      background:#0b0b0b;border:1px solid var(--border);
+      padding:12px;border-radius:14px;box-shadow:inset 0 0 18px rgba(255,255,255,.08);
+      text-align:left;margin:10px 0 16px;
+    }
+    .row{display:flex;gap:10px;align-items:center;margin:6px 0}
+    .key{opacity:.7;min-width:64px}
+    .val{white-space:nowrap}
+
+    .reveal{opacity:0;transform:translateY(6px);animation:up .45s ease forwards}
+    .reveal:nth-child(1){animation-delay:.25s}
+    .reveal:nth-child(2){animation-delay:.4s}
+    .reveal:nth-child(3){animation-delay:.55s}
+    @keyframes up{to{opacity:1;transform:translateY(0)}}
+
+    @media (max-width:520px){
+      .btn{--padX:26px}
+      .logo{width:96px;height:96px;border-radius:20px}
+    }
   </style>
 </head>
 <body>
 
-  <!-- LOGO -->
-  <figure class="logo">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoDPNaSYNAf7h6ftI851dYj6Tr1CTlDLXJMA&s" alt="Logo" />
+  <!-- FLOATING LOGO -->
+  <figure class="logo" aria-label="K2ER Logo">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoDPNaSYNAf7h6ftI851dYj6Tr1CTlDLXJMA&s" alt="Logo (grayscale)" />
   </figure>
+
+  <!-- PARTICLES -->
+  <div class="particles" id="particles" aria-hidden="true"></div>
 
   <!-- MAIN SCENE -->
   <main class="scene">
     <section class="stage">
-      <button class="btn" id="openBtn">GET</button>
+      <button class="btn" id="openBtn">
+        <span class="ring"></span>
+        Open Access
+      </button>
     </section>
   </main>
 
-  <!-- POPUP -->
-  <section class="overlay" id="overlay">
-    <article class="popup">
-      <button class="close" id="closeBtn">✕</button>
-      <h3>K2ER • ID / PASS</h3>
-      <div class="cred">
-        <div class="row">🆔 ID : <b>UNKNOWNVIP</b></div>
-        <div class="row">🔑 PASS : <b>MNBVCXZLKJHG</b></div>
+  <!-- OVERLAY + POPUP -->
+  <section class="overlay" id="overlay" aria-modal="true" role="dialog" aria-labelledby="dlgTitle" aria-hidden="true">
+    <article class="popup" id="popup">
+      <button class="close" id="closeBtn" aria-label="Close">✕</button>
+      <div class="title reveal" id="dlgTitle">K2ER • VERIFIED CREDENTIALS</div>
+
+      <div class="cred reveal">
+        <div class="row"><div class="key">🆔 ID</div><div class="val">UNKNOWNVIP</div></div>
+        <div class="row"><div class="key">🔑 PASS</div><div class="val">MNBVCXZLKJHG</div></div>
       </div>
-      <button class="btn" id="waBtn" style="margin-top:15px;width:100%">5 Minute Locked Problem</button>
+
+      <button class="btn reveal" id="waBtn" style="width:100%;justify-content:center">
+        <span class="ring"></span>
+        5 Minute Locked Problem
+      </button>
     </article>
   </section>
 
-  <!-- SCRIPT -->
+  <!-- SCRIPTS -->
   <script>
-    const openBtn = document.getElementById("openBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const overlay = document.getElementById("overlay");
-    const waBtn = document.getElementById("waBtn");
+    const $ = sel => document.querySelector(sel);
 
-    // open popup
-    openBtn.addEventListener("click", ()=>{
+    /* ---------- Particles ---------- */
+    const particles = $("#particles");
+    const totalDots = 42;
+    for(let i=0;i<totalDots;i++){
+      const d = document.createElement("i");
+      d.className = "dot";
+      d.style.left = (Math.random()*100).toFixed(2) + "%";
+      d.style.animationDuration = (10 + Math.random()*12).toFixed(2)+"s";
+      d.style.animationDelay = (-Math.random()*10).toFixed(2)+"s";
+      d.style.opacity = (0.25 + Math.random()*0.5).toFixed(2);
+      particles.appendChild(d);
+    }
+
+    /* ---------- Controls ---------- */
+    const overlay = $("#overlay");
+    const openBtn = $("#openBtn");
+    const closeBtn = $("#closeBtn");
+    const waBtn = $("#waBtn");
+
+    function openPopup(){
+      overlay.style.display = "flex";
       overlay.classList.add("show");
-    });
-
-    // close popup
-    closeBtn.addEventListener("click", ()=>{
+      openBtn.style.display = "none";
+    }
+    function closePopup(){
       overlay.classList.remove("show");
-    });
+      overlay.style.display = "none";
+      openBtn.style.display = "inline-flex";
+    }
 
-    // close on background click
-    overlay.addEventListener("click",(e)=>{
-      if(e.target === overlay){overlay.classList.remove("show");}
-    });
+    openBtn.addEventListener("click", openPopup);
+    closeBtn.addEventListener("click", closePopup);
+    overlay.addEventListener("click", (e)=>{ if(e.target===overlay) closePopup(); });
 
-    // whatsapp link
+    // WhatsApp deep link
     waBtn.addEventListener("click", ()=>{
-      const phone = "918427519168";
+      const phone = "918427519168"; // +91 8427519168
       const msg = "I am having problem with K2er, it's locked please solve";
-      window.open(https://wa.me/${phone}?text=${encodeURIComponent(msg)},"_blank");
+      window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,"_blank");
     });
 
-    // disable copy
+    /* ---------- Copy / context protections ---------- */
     document.addEventListener("copy", e=>{
       e.preventDefault();
-      e.clipboardData.setData("text/plain","\uD83D\uDD95"); // 🖕
-      alert("Copy mat kar bhai \uD83D\uDE1C"); // 😜
+      e.clipboardData.setData("text/plain","🖕");
+      alert("Copy mat kar bhai 😜");
     });
-
-    // disable right click
     document.addEventListener("contextmenu", e=> e.preventDefault());
 
-    // Esc key closes popup
+    // Keyboard shortcut: Esc closes popup
     window.addEventListener("keydown", e=>{
-      if(e.key==="Escape" && overlay.classList.contains("show")){
-        overlay.classList.remove("show");
-      }
+      if(e.key==="Escape" && overlay.classList.contains("show")) closePopup();
     });
   </script>
 </body>
