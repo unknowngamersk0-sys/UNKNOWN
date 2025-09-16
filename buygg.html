@@ -8,7 +8,7 @@
     :root {
         --pink: #ff00cc;
         --neon: #ff00cc; 
-        --highlight: #ff4d6d; /* Light neon red */
+        --highlight: #ff4d6d;
     }
     body {
         background: #0e0e0e;
@@ -50,12 +50,10 @@
     .stat-outer:nth-child(3) { animation-delay: 0.6s; }
     .stat-outer:nth-child(4) { animation-delay: 0.8s; }
     .stat-outer:nth-child(5) { animation-delay: 1s; }
-
     @keyframes fadeInUp {
         from { opacity: 0; transform: translateY(30px); }
         to { opacity: 1; transform: translateY(0); }
     }
-
     .dot {
         width: 5px;
         height: 5px;
@@ -93,7 +91,6 @@
         text-align: center;
     }
     .buy-btn {
-        text-decoration: none;
         background: linear-gradient(135deg, #222 40%, #111 100%);
         color: #fff;
         font-weight: bold;
@@ -113,8 +110,6 @@
         transform: scale(1.07);
         box-shadow: 0 0 24px var(--neon), 0 0 40px var(--neon), 0 0 50px #111 inset;
     }
-
-    /* Highlighted Lifetime Plan */
     .highlight {
         box-shadow: 0 0 25px var(--highlight), inset 0 0 25px #111;
         position: relative;
@@ -146,55 +141,67 @@
 
 <div class="card-container">
 
-    <!-- 1 Month Plan -->
+    <!-- 1 Month Premium -->
     <div class="stat-outer">
         <div class="dot"></div>
         <div class="card">
             <h2>1 Month Premium</h2>
             <p>₹10 Only</p>
-            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%20Monthly%20Plan*,%20_priced%20at%20%E2%82%B910_.%20%F0%9F%98%8A"
-               target="_blank"
-               class="buy-btn">Buy</a>
+            <form action="srpayx_buy.php" method="post">
+                <input type="hidden" name="customer_mobile" value="9999999999" />
+                <input type="hidden" name="amount" value="10">
+                <input type="hidden" name="planname" value="1 Month Premium">
+                <button type="submit" class="buy-btn">Pay ₹10 & Buy</button>
+            </form>
         </div>
     </div>
 
-    <!-- 3 Month Plan -->
+    <!-- 3 Months Premium -->
     <div class="stat-outer">
         <div class="dot"></div>
         <div class="card">
             <h2>3 Months Premium</h2>
             <p>₹30 Only</p>
-            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%203-Month%20Plan*,%20_priced%20at%20%E2%82%B930_.%20%F0%9F%98%8A"
-               target="_blank"
-               class="buy-btn">Buy</a>
+            <form action="srpayx_buy.php" method="post">
+                <input type="hidden" name="customer_mobile" value="9999999999" />
+                <input type="hidden" name="amount" value="30">
+                <input type="hidden" name="planname" value="3 Months Premium">
+                <button type="submit" class="buy-btn">Pay ₹30 & Buy</button>
+            </form>
         </div>
     </div>
 
-    <!-- 6 Month Plan -->
+    <!-- 6 Months Premium -->
     <div class="stat-outer">
         <div class="dot"></div>
         <div class="card">
             <h2>6 Months Premium</h2>
             <p>₹60 Only</p>
-            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%206-Month%20Plan*,%20_priced%20at%20%E2%82%B960_.%20%F0%9F%98%8A"
-               target="_blank"
-               class="buy-btn">Buy</a>
+            <form action="srpayx_buy.php" method="post">
+                <input type="hidden" name="customer_mobile" value="9999999999" />
+                <input type="hidden" name="amount" value="60">
+                <input type="hidden" name="planname" value="6 Months Premium">
+                <button type="submit" class="buy-btn">Pay ₹60 & Buy</button>
+            </form>
         </div>
     </div>
 
-    <!-- 12 Month Plan -->
+    <!-- 12 Months Premium -->
     <div class="stat-outer">
         <div class="dot"></div>
         <div class="card">
             <h2>12 Months Premium</h2>
             <p>₹100 Only</p>
-            <a href="https://wa.me/918427519168?text=*I%20am%20interested%20in%20the%20GG%20Mouse%20Pro%20Annual%20Plan*,%20_priced%20at%20%E2%82%B9100_.%20%F0%9F%98%8A"
-               target="_blank"
-               class="buy-btn">Buy</a>
+            <form action="srpayx_buy.php" method="post">
+                <input type="hidden" name="customer_mobile" value="9999999999" />
+                <input type="hidden" name="amount" value="100">
+                <input type="hidden" name="planname" value="12 Months Premium">
+                <button type="submit" class="buy-btn">Pay ₹100 & Buy</button>
+            </form>
         </div>
     </div>
 
-    <!-- Lifetime Plan (Highlighted) -->
+    <!-- Lifetime Premium -->
     <div class="stat-outer highlight">
         <div class="dot"></div>
         <div class="card">
@@ -202,12 +209,15 @@
             <h2>Lifetime Premium</h2>
             <p>₹999 Only</p>
             <p class="desc">You will get a serial no<br>that you can put on GG MOUSE PRO<br>and activate lifetime premium.</p>
-            <a href="https://wa.me/918427519168?text=*I%20want%20the%20GG%20Mouse%20Pro%20Lifetime%20Plan*,%20_priced%20at%20%E2%82%B9999_.%20%F0%9F%98%8A"
-               target="_blank"
-               class="buy-btn">Buy Now</a>
+            <form action="srpayx_buy.php" method="post">
+                <input type="hidden" name="customer_mobile" value="9999999999" />
+                <input type="hidden" name="amount" value="999">
+                <input type="hidden" name="planname" value="Lifetime Premium">
+                <button type="submit" class="buy-btn">Pay ₹999 & Buy Lifetime</button>
+            </form>
         </div>
     </div>
 
 </div>
 </body>
-                </html>
+</html>
